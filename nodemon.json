@@ -1,0 +1,10 @@
+{
+    "env": {
+        "JWT_KEY": "5dfe662a637c1720ecf31fb3",
+        "MONGO_ATLAS_PW": "khmt.group02",
+        "EMAIL_USER": "khmt.group02@gmail.com",
+        "EMAIL_PASS": "hcmus.khmt#02",
+        "URL_PRONTEND": "http://localhost:4200"
+        
+    }
+}

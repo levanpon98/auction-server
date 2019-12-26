@@ -1,5 +1,28 @@
-
+const multer = require('multer');
 const Product = require('../models/product')
+
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, 'uploads/');
+    },
+
+    // By default, multer removes file extensions so let's add them back
+    filename: function(req, file, cb) {
+        cb(null, file.fieldname + '-' + Date.now() + file.originalname);
+    }
+});
+
+const fileFilters = (req, file, cb) => {
+    if (
+        file.mimetype === 'image/jpeg' ||
+        file.mimetype === 'image/png'
+    ) {
+        cb(null, true);
+    } else {
+        cb(null, false);
+    }
+};
+
 
 exports.products_get_all = (req, res, next) => {
     if (!req.query.title) {
@@ -16,12 +39,10 @@ exports.products_get_all = (req, res, next) => {
                 ok: 1,
                 products: docs.map(doc => {
                     return {
-                        title: doc.title, 
-                        price: doc.price, 
-                        _id: doc._id,
+                        product: doc,
                         request: {
                             type: "GET",
-                            url: 'http://localhost:4000/product/' + doc._id
+                            url: 'http://localhost:4000/api/product/' + doc._id
                         }
                     }
                 })
@@ -33,34 +54,58 @@ exports.products_get_all = (req, res, next) => {
                 ok: 0
             })
         })
-}
+};
 
 exports.create_product = (req, res, next) => {
-    const product = new Product(req.body)
+    // let upload = multer({
+    //     storage: storage,
+    //     limits: {
+    //         fileSize: 1024 * 1024 * 5
+    //     }
+    // }).single('image');
+    //
+    // upload(req, res, function(err) {
+    //     if (req.fileValidationError) {
+    //         return res.send(req.fileValidationError);
+    //     }
+    //     else if (!req.file) {
+    //         return res.send('Please select an image to upload');
+    //     }
+    //     else if (err instanceof multer.MulterError) {
+    //         return res.send(err);
+    //     }
+    //     else if (err) {
+    //         return res.send(err);
+    //     } else {
+            const product = new Product({
+                title: req.body.title,
+                price: req.body.price,
+                // image: req.file.path,
+                description: req.body.description,
+                status: req.body.status,
+            });
 
-    product
-        .save()
-        .then((result) => {
-            res.status(201).json({
-                message: "Create new product successfully",
-                ok: 1,
-                product: {
-                    title: result.title, 
-                    price: result.price, 
-                    _id: result._id,
-                    request: {
-                        type: "GET",
-                        url: 'http://localhost:4000/product/' + result._id
-                    }
-                }
-            })
-        })
-        .catch(err => {
-            res.status(500).json({
-                error: err,
-                ok: 0
-            })
-        });
+            product
+                .save()
+                .then((result) => {
+                    res.status(200).json({
+                        message: "Create new product successfully",
+                        ok: 1,
+                        product: result,
+                        request: {
+                            type: "GET",
+                            url: 'http://localhost:4000/api/product/' + result._id
+                        }
+                    })
+                })
+                .catch(err => {
+                    res.status(500).json({
+                        error: err,
+                        ok: 0
+                    })
+                });
+    //     }
+    // });
 }
 
 exports.get_product_by_id = (req, res, next) => {
@@ -122,7 +167,7 @@ exports.update_product_by_id = (req, res, next) => {
                             error: err,
                             ok: 0
                         })
-                    }) 
+                    })
             } else {
                 res.status(404).json({
                     message: "No valid entry found",
@@ -136,7 +181,7 @@ exports.update_product_by_id = (req, res, next) => {
                 ok: 0
             });
         })
-    
+
 }
 
 exports.delete_product_by_id = (req, res, next) => {
@@ -156,5 +201,5 @@ exports.delete_product_by_id = (req, res, next) => {
             })
         });
 
-    
+
 }

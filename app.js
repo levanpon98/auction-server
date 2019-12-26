@@ -5,7 +5,12 @@ const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const app = express();
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const upload = require('express-fileupload');
+
+app.use(upload({
+    limits: { fileSize: 50 * 1024 * 1024 },
+}));
 
 var cors = require ('cors');
 
@@ -22,6 +27,7 @@ var districtRouter = require('./routes/district');
 var wardRouter = require('./routes/ward');
 var provinceRouter = require('./routes/province');
 var addressRouter = require('./routes/address');
+var adminRouter = require('./routes/admin');
 
 mongoose.connect(
     'mongodb+srv://khmtgroup02:' +
@@ -35,8 +41,9 @@ mongoose.connect(
 );
 
 app.use(morgan('dev'));
+app.use('/uploads', express.static('uploads'));
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json()); 
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -64,6 +71,7 @@ app.use('/api/district', districtRouter);
 app.use('/api/ward', wardRouter);
 app.use('/api/province', provinceRouter);
 app.use('/api/address', addressRouter);
+app.use('/api/admin', adminRouter);
 
 app.use((req, res, next) => {
     const error = new Error("Not found");

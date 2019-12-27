@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
-const User = require('../models/admin');
+const User = require('../models/users');
 
 const PasswordResetToken = require('../models/reset_token');
 

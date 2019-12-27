@@ -35,12 +35,7 @@ exports.products_get_all = (req, res, next) => {
 
 exports.create_product = (req, res, next) => {
 
-            const product = new Product({
-                title: req.body.title,
-                price: req.body.price,
-                description: req.body.description,
-                status: req.body.status,
-            });
+            const product = new Product(req.body);
 
             product
                 .save()

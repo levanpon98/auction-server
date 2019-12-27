@@ -6,7 +6,7 @@ exports.products_get_all = (req, res, next) => {
         req.query.title = ""
     }
     Product.find({
-        title: { $regex: '.*' + req.query.title + '.*' }
+        title: {$regex: '.*' + req.query.title + '.*'}
     })
         .select('_id title price')
         .exec()
@@ -26,36 +26,36 @@ exports.products_get_all = (req, res, next) => {
             }
             res.status(200).json(response)
         }).catch(err => {
+        res.status(500).json({
+            error: err,
+            ok: 0
+        })
+    })
+};
+
+exports.create_product = (req, res, next) => {
+    console.log(req.body)
+    const product = new Product(req.body);
+
+    product
+        .save()
+        .then((result) => {
+            res.status(200).json({
+                message: "Create new product successfully",
+                ok: 1,
+                product: result,
+                request: {
+                    type: "GET",
+                    url: 'http://localhost:4000/api/product/' + result._id
+                }
+            })
+        })
+        .catch(err => {
             res.status(500).json({
                 error: err,
                 ok: 0
             })
-        })
-};
-
-exports.create_product = (req, res, next) => {
-
-            const product = new Product(req.body);
-
-            product
-                .save()
-                .then((result) => {
-                    res.status(200).json({
-                        message: "Create new product successfully",
-                        ok: 1,
-                        product: result,
-                        request: {
-                            type: "GET",
-                            url: 'http://localhost:4000/api/product/' + result._id
-                        }
-                    })
-                })
-                .catch(err => {
-                    res.status(500).json({
-                        error: err,
-                        ok: 0
-                    })
-                });
+        });
     //     }
     // });
 }
@@ -66,7 +66,7 @@ exports.get_product_by_id = (req, res, next) => {
         .select('_id title price')
         .exec()
         .then(doc => {
-            if(doc) {
+            if (doc) {
                 res.status(200).json({
                     product: doc,
                     request: {
@@ -94,13 +94,13 @@ exports.update_product_by_id = (req, res, next) => {
     Product.findById(id)
         .exec()
         .then(doc => {
-            if(doc) {
+            if (doc) {
                 Product.updateOne({_id: id}, {$set: req.body})
                     .exec()
                     .then(result => {
-                        if(result.nModified == 0) {
+                        if (result.nModified == 0) {
                             res.status(404).json({
-                                message:"You haven't changed any information yet",
+                                message: "You haven't changed any information yet",
                                 ok: 0
                             })
                         } else {

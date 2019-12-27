@@ -57,30 +57,10 @@ exports.products_get_all = (req, res, next) => {
 };
 
 exports.create_product = (req, res, next) => {
-    // let upload = multer({
-    //     storage: storage,
-    //     limits: {
-    //         fileSize: 1024 * 1024 * 5
-    //     }
-    // }).single('image');
-    //
-    // upload(req, res, function(err) {
-    //     if (req.fileValidationError) {
-    //         return res.send(req.fileValidationError);
-    //     }
-    //     else if (!req.file) {
-    //         return res.send('Please select an image to upload');
-    //     }
-    //     else if (err instanceof multer.MulterError) {
-    //         return res.send(err);
-    //     }
-    //     else if (err) {
-    //         return res.send(err);
-    //     } else {
+
             const product = new Product({
                 title: req.body.title,
                 price: req.body.price,
-                // image: req.file.path,
                 description: req.body.description,
                 status: req.body.status,
             });

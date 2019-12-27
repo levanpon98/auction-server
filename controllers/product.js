@@ -1,29 +1,6 @@
 const multer = require('multer');
 const Product = require('../models/product')
 
-const storage = multer.diskStorage({
-    destination: function(req, file, cb) {
-        cb(null, 'uploads/');
-    },
-
-    // By default, multer removes file extensions so let's add them back
-    filename: function(req, file, cb) {
-        cb(null, file.fieldname + '-' + Date.now() + file.originalname);
-    }
-});
-
-const fileFilters = (req, file, cb) => {
-    if (
-        file.mimetype === 'image/jpeg' ||
-        file.mimetype === 'image/png'
-    ) {
-        cb(null, true);
-    } else {
-        cb(null, false);
-    }
-};
-
-
 exports.products_get_all = (req, res, next) => {
     if (!req.query.title) {
         req.query.title = ""

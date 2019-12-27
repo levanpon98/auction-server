@@ -2,10 +2,6 @@ var express = require('express');
 var router = express.Router();
 const checkAuth = require('../middleware/auth')
 
-const path = require('path');
-
-
-
 const ProductController = require('../controllers/product')
 
 router.get('/', checkAuth, ProductController.products_get_all);

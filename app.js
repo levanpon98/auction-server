@@ -6,11 +6,6 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const app = express();
 const mongoose = require('mongoose');
-const upload = require('express-fileupload');
-
-app.use(upload({
-    limits: { fileSize: 50 * 1024 * 1024 },
-}));
 
 var cors = require ('cors');
 
@@ -41,7 +36,6 @@ mongoose.connect(
 );
 
 app.use(morgan('dev'));
-app.use('/uploads', express.static('uploads'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 

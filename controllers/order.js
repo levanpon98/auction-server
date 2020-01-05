@@ -1,49 +1,57 @@
-const mongoose = require('mongoose')
-const Order = require('../models/order')
-const OrderDetail = require('../models/order_detail')
+const mongoose = require('mongoose');
+const randomstring = require("randomstring");
+
+const Order = require('../models/order');
+const User = require('../models/users');
+const Product = require('../models/product');
+const OrderDetail = require('../models/order_detail');
 
 
+exports.get_all_orders = async (req, res, next) => {
+    const list_order = await Order.find().sort({_id: 1});
 
-exports.get_all_orders = (req, res, next) => {
-    Order.find()
-        .exec()
-        .then(docs => {
-            const response = {
-                count: docs.length, 
-                ok: 1,
-                order: docs.map(doc => {
-                    
-                    OrderDetail.find({order_id: doc._id})
-                        .select('')
-                        .exec()
-                        .then(list => {
-                            return list
-                        })
-                })
+    const order = [];
+    await Promise.all(list_order.map(async (doc) => {
+        const user_info = await User.find({_id: doc.user_id}).exec().then(res => {return res});
+        const order_detail = await OrderDetail.find({order_id: doc._id}).exec()
+            .then(res => {
+                return res
+            });
+
+        const order_detail_ = await Promise.all(order_detail.map(async doc => {
+            const product = await Product.find({_id: doc.product_id});
+            return {
+                quantity: doc.quantity,
+                product_info: product
             }
-            res.status(200).json(response)
-
-        }).catch(err => {
-            res.status(500).json({
-                error: err,
-                ok: 0
-            })
+        }));
+        order.push({
+            user_info: user_info,
+            detail: order_detail_
         })
-}
+    }));
+    return res.status(200).json(order);
+};
 
 exports.create_order = (req, res, next) => {
-    const order = new Order({user_id: req.body.user_id})
-    
+    const order = new Order(
+        {user_id: req.body.user_id},
+        {address: req.body.address},
+        {code: randomstring.generate({
+                charset: 'numeric'
+            })
+        },
+    );
+
     order
         .save()
         .then(async (result) => {
-            list_orders = []
-            
-            for(const ops of req.body.order) {
+            let list_orders = [];
+
+            for (const ops of req.body.order) {
                 try {
-                    ops["order_id"] = result._id
-                    const order_detail = new OrderDetail(ops)
-                    
+                    ops["order_id"] = result._id;
+                    const order_detail = new OrderDetail(ops);
                     const new_order = await order_detail
                         .save()
                         .then((r) => {
@@ -58,27 +66,26 @@ exports.create_order = (req, res, next) => {
                             }
                         })
                         .catch(err => {
-                            return {}
-                        })
-                    
-                    if(new_order) {
+                            return res.status(500).send(err)
+                        });
+                    if (new_order) {
                         list_orders.push(new_order)
                     }
                 } catch (err) {
-                    res.status(500).send(err);
+                    return res.status(500).send(err);
                 }
             }
-
-            res.status(201).json({
+            return res.status(201).json({
                 message: "Create new Order successfully",
                 ok: 1,
+                code: result.code,
                 order_detail: list_orders
             })
         })
         .catch((err) => {
-            res.status(500).json({
+            return res.status(500).json({
                 error: err,
                 ok: 0
             })
         })
-}
+};

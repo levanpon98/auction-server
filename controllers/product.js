@@ -34,7 +34,6 @@ exports.products_get_all = (req, res, next) => {
 };
 
 exports.create_product = (req, res, next) => {
-    console.log(req.body)
     const product = new Product(req.body);
 
     product

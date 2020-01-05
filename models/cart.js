@@ -5,7 +5,7 @@ module.exports = (old_cart) => {
 
     this.add = (item, id) => {
         var stored_item = this.items[id]
-        if(!stored_item) {
+        if (!stored_item) {
             stored_item = this.items[id] = {item: item, qty: 0, price: 0}
         }
 

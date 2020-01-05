@@ -10,7 +10,8 @@ const addressSchema = mongoose.Schema({
     district: {type: String, required: true },
     ward: {type: String, required: true },
     user_id: {type: mongoose.Schema.Types.ObjectId, ref: "User"},
-    path: String
+    path: String,
+    is_primary: Boolean
 });
 
 module.exports = mongoose.model('Address', addressSchema);

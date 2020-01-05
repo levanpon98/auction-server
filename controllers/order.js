@@ -38,6 +38,7 @@ exports.get_all_orders = async (req, res, next) => {
 exports.get_order_by_user_id = async (req, res, next) => {
     const id = req.params.id;
     const list_order = await Order.find({user_id: id}).sort({_id: 1});
+
     const order = [];
     await Promise.all(list_order.map(async (doc) => {
         const user_info = await User.find({_id: doc.user_id}).exec().then(res => {

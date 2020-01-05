@@ -14,6 +14,10 @@ app.use(cors({
     credentials:true
 }));
 
+app.use(morgan('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+
 var productsRouter = require('./routes/product');
 var orderRouter = require('./routes/order');
 var usersRouter = require('./routes/user');
@@ -35,9 +39,7 @@ mongoose.connect(
     }
 );
 
-app.use(morgan('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+
 
 
 app.use((req, res, next) => {

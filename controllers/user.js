@@ -124,6 +124,40 @@ exports.delete = (req, res, next) => {
         });
 }
 
+exports.get_all_user = (req, res, next) => {
+
+    User.find()
+        .exec()
+        .then((users) => {
+            const response = {
+                count: users.length,
+                ok: 1,
+                users: users.map(user => {
+                    return {
+                        id: user._id,
+                        username: user.displayName,
+                        first_name: user.first_name,
+                        last_name: user.last_name,
+                        dayofbirth: user.dayofbirth,
+                        phone: user.phone,
+                        email: user.email,
+                        request: {
+                            type: "GET",
+                            url: 'http://localhost:4000/api/user/' + user._id
+                        }
+                    }
+                })
+            };
+            res.status(200).json(response)
+        })
+        .catch(err =>
+            res.status(500).json({
+                message: "User not found",
+                ok: 0
+            })
+        )
+};
+
 exports.get_user_by_id = (req, res, next) => {
     const id = req.params.id;
     if (req.userData.id == id) {

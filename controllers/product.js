@@ -33,7 +33,14 @@ exports.products_get_all = (req, res, next) => {
 };
 
 exports.create_product = (req, res, next) => {
-    const product = new Product(req.body);
+
+    const product = new Product({
+        title: req.body.title,
+        price: req.body.price,
+        image: req.file.path,
+        description: req.body.description,
+        status: req.body.status,
+    });
 
     product
         .save()

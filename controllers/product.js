@@ -8,7 +8,6 @@ exports.products_get_all = (req, res, next) => {
     Product.find({
         title: {$regex: '.*' + req.query.title + '.*'}
     })
-        .select('_id title price')
         .exec()
         .then(docs => {
             const response = {
@@ -62,7 +61,6 @@ exports.create_product = (req, res, next) => {
 exports.get_product_by_id = (req, res, next) => {
     const id = req.params.id;
     Product.findById(id)
-        .select('_id title price')
         .exec()
         .then(doc => {
             if (doc) {

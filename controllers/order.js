@@ -12,7 +12,9 @@ exports.get_all_orders = async (req, res, next) => {
 
     const order = [];
     await Promise.all(list_order.map(async (doc) => {
-        const user_info = await User.find({_id: doc.user_id}).exec().then(res => {return res});
+        const user_info = await User.find({_id: doc.user_id}).exec().then(res => {
+            return res
+        });
         const order_detail = await OrderDetail.find({order_id: doc._id}).exec()
             .then(res => {
                 return res
@@ -33,11 +35,41 @@ exports.get_all_orders = async (req, res, next) => {
     return res.status(200).json(order);
 };
 
+exports.get_order_by_user_id = async (req, res, next) => {
+    const id = req.params.id;
+    const list_order = await Order.find({user_id: id}).sort({_id: 1});
+    const order = [];
+    await Promise.all(list_order.map(async (doc) => {
+        const user_info = await User.find({_id: doc.user_id}).exec().then(res => {
+            return res
+        });
+        const order_detail = await OrderDetail.find({order_id: doc._id}).exec()
+            .then(res => {
+                return res
+            });
+
+        const order_detail_ = await Promise.all(order_detail.map(async doc => {
+            const product = await Product.find({_id: doc.product_id});
+            return {
+                quantity: doc.quantity,
+                product_info: product
+            }
+        }));
+        order.push({
+            user_info: user_info,
+            detail: order_detail_
+        })
+    }));
+    return res.status(200).json(order);
+};
+
+
 exports.create_order = (req, res, next) => {
     const order = new Order(
         {user_id: req.body.user_id},
         {address: req.body.address},
-        {code: randomstring.generate({
+        {
+            code: randomstring.generate({
                 charset: 'numeric'
             })
         },

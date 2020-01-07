@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 const addressSchema = mongoose.Schema({
     _id: {
@@ -12,6 +12,8 @@ const addressSchema = mongoose.Schema({
     user_id: {type: mongoose.Schema.Types.ObjectId, ref: "User"},
     path: String,
     is_primary: Boolean
+}, {
+    timestamps: true
 });
 
 module.exports = mongoose.model('Address', addressSchema);

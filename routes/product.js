@@ -20,6 +20,7 @@ const fileFilter = (req, file, cb) => {
         cb(null, false);
     }
 };
+
 const upload = multer({
     storage: storage,
     limits: {
@@ -28,9 +29,12 @@ const upload = multer({
     fileFilter: fileFilter
 });
 
-router.get('/', checkAuth, ProductController.products_get_all);
-router.post('/',  upload.single('image'), ProductController.create_product);
-router.get('/:id', checkAuth, ProductController.get_product_by_id);
+router.get('/',  ProductController.products_get_all);
+router.post('/', upload.fields([
+    { name: 'image', maxCount: 1 },
+    { name: 'gallery', maxCount: 3 }
+]), ProductController.create_product);
+router.get('/:id',  ProductController.get_product_by_id);
 router.patch("/:id", checkAuth, ProductController.update_product_by_id);
 router.delete('/:id', checkAuth, ProductController.delete_product_by_id);
 

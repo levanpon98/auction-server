@@ -8,6 +8,8 @@ const productSchema = mongoose.Schema({
     title: { type: String, required: true},
     link: {type: String, required: true},
     parent_menu: {type: mongoose.Schema.Types.ObjectId, ref: "Menu"}
+}, {
+    timestamps: true
 })
 
 module.exports = mongoose.model('Menu', productSchema)

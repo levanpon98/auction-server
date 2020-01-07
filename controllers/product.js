@@ -1,5 +1,6 @@
 const multer = require('multer');
-const Product = require('../models/product')
+const Product = require('../models/product');
+const Gallery = require('../models/gallery');
 
 exports.products_get_all = (req, res, next) => {
     if (!req.query.title) {
@@ -8,6 +9,7 @@ exports.products_get_all = (req, res, next) => {
     Product.find({
         title: {$regex: '.*' + req.query.title + '.*'}
     })
+        .populate({path: 'galleries', options: { limit: 3}})
         .exec()
         .then(docs => {
             const response = {
@@ -22,7 +24,7 @@ exports.products_get_all = (req, res, next) => {
                         }
                     }
                 })
-            }
+            };
             res.status(200).json(response)
         }).catch(err => {
         res.status(500).json({
@@ -33,11 +35,10 @@ exports.products_get_all = (req, res, next) => {
 };
 
 exports.create_product = (req, res, next) => {
-
     const product = new Product({
         title: req.body.title,
         price: req.body.price,
-        image: req.file.path,
+        image: req.files.image[0].path,
         description: req.body.description,
         status: req.body.status,
     });
@@ -45,6 +46,18 @@ exports.create_product = (req, res, next) => {
     product
         .save()
         .then((result) => {
+            req.files.gallery.map(image => {
+                const gallery = new Gallery({image: image.path});
+                gallery.save()
+                    .then(r => {
+                        Product.findOne({_id: result._id}, (err, item) => {
+                            if(item) {
+                                item.galleries.push(gallery);
+                                item.save()
+                            }
+                        })
+                    });
+            });
             res.status(200).json({
                 message: "Create new product successfully",
                 ok: 1,
@@ -63,11 +76,12 @@ exports.create_product = (req, res, next) => {
         });
     //     }
     // });
-}
+};
 
 exports.get_product_by_id = (req, res, next) => {
     const id = req.params.id;
     Product.findById(id)
+        .populate('galleries')
         .exec()
         .then(doc => {
             if (doc) {

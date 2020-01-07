@@ -9,6 +9,8 @@ const districtSchema = mongoose.Schema({
     path: {type: String, required: true },
     path_with_type: {type: String, required: true },
     parent_code: {type: String, required: true },
+}, {
+    timestamps: true
 });
 
 module.exports = mongoose.model('District', districtSchema);

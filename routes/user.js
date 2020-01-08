@@ -15,4 +15,6 @@ router.patch('/:id', checkAuth, UserController.update_user_by_id);
 router.post("/forgot-password", UserController.forgot_password);
 router.post("/reset-password", UserController.reset_password);
 router.patch("/change-password/:id",checkAuth, UserController.change_password);
+router.patch("/block-user/:id", checkAuth, UserController.block_user);
+router.patch("/unblock-user/:id", checkAuth, UserController.unblock_user);
 module.exports = router;

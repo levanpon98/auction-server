@@ -429,3 +429,59 @@ exports.check_token = (req, res, next) => {
         return res.status(200).json({ok: 0})
     }
 };
+
+exports.block_user = (req, res, next) => {
+    const id = req.params.id;
+    User.findById(id)
+        .exec()
+        .then(doc => {
+            User.updateOne({_id: id}, {$set: {status: 0}})
+                .exec()
+                .then(() => {
+                    res.status(200).json({
+                        messages: "User has been block",
+                        ok: 1
+                    })
+                })
+                .catch(err => {
+                    res.status(200).json({
+                        error: err,
+                        ok: 0
+                    })
+                })
+        })
+        .catch(err => {
+            res.status(200).json({
+                error: err,
+                ok: 0
+            });
+        })
+};
+
+exports.unblock_user = (req, res, next) => {
+    const id = req.params.id;
+    User.findById(id)
+        .exec()
+        .then(doc => {
+            User.updateOne({_id: id}, {$set: {status: 1}})
+                .exec()
+                .then(() => {
+                    res.status(200).json({
+                        messages: "User has been block",
+                        ok: 1
+                    })
+                })
+                .catch(err => {
+                    res.status(200).json({
+                        error: err,
+                        ok: 0
+                    })
+                })
+        })
+        .catch(err => {
+            res.status(200).json({
+                error: err,
+                ok: 0
+            });
+        })
+};

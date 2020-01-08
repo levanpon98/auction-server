@@ -141,6 +141,7 @@ exports.get_all_user = (req, res, next) => {
                         dayofbirth: user.dayofbirth,
                         phone: user.phone,
                         email: user.email,
+                        status: user.status,
                         request: {
                             type: "GET",
                             url: 'http://localhost:4000/api/user/' + user._id
@@ -439,7 +440,7 @@ exports.block_user = (req, res, next) => {
                 .exec()
                 .then(() => {
                     res.status(200).json({
-                        messages: "Block user successfully",
+                        message: "Block user successfully",
                         ok: 1
                     })
                 })
@@ -467,7 +468,7 @@ exports.unblock_user = (req, res, next) => {
                 .exec()
                 .then(() => {
                     res.status(200).json({
-                        messages: "Unblock user successfully",
+                        message: "Unblock user successfully",
                         ok: 1
                     })
                 })

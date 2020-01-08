@@ -439,7 +439,7 @@ exports.block_user = (req, res, next) => {
                 .exec()
                 .then(() => {
                     res.status(200).json({
-                        messages: "User has been block",
+                        messages: "Block user successfully",
                         ok: 1
                     })
                 })
@@ -467,7 +467,63 @@ exports.unblock_user = (req, res, next) => {
                 .exec()
                 .then(() => {
                     res.status(200).json({
-                        messages: "User has been block",
+                        messages: "Unblock user successfully",
+                        ok: 1
+                    })
+                })
+                .catch(err => {
+                    res.status(200).json({
+                        error: err,
+                        ok: 0
+                    })
+                })
+        })
+        .catch(err => {
+            res.status(200).json({
+                error: err,
+                ok: 0
+            });
+        })
+};
+
+exports.upgrade_account = (req, res, next) => {
+    const id = req.params.id;
+    User.findById(id)
+        .exec()
+        .then(doc => {
+            User.updateOne({_id: id}, {$set: {request_for_selling: 1}})
+                .exec()
+                .then(() => {
+                    res.status(200).json({
+                        messages: "The request has been send to admin",
+                        ok: 1
+                    })
+                })
+                .catch(err => {
+                    res.status(200).json({
+                        error: err,
+                        ok: 0
+                    })
+                })
+        })
+        .catch(err => {
+            res.status(200).json({
+                error: err,
+                ok: 0
+            });
+        })
+};
+
+exports.approve_upgrade_account = (req, res, next) => {
+    const id = req.params.id;
+    User.findById(id)
+        .exec()
+        .then(doc => {
+            User.updateOne({_id: id}, {$set: {request_for_selling: 0, is_seller: 1}})
+                .exec()
+                .then(() => {
+                    res.status(200).json({
+                        messages: "The customer has become a seller",
                         ok: 1
                     })
                 })

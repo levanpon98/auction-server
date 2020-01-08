@@ -17,4 +17,7 @@ router.post("/reset-password", UserController.reset_password);
 router.patch("/change-password/:id",checkAuth, UserController.change_password);
 router.patch("/block-user/:id", checkAuth, UserController.block_user);
 router.patch("/unblock-user/:id", checkAuth, UserController.unblock_user);
+router.patch("/upgrade-account/:id", checkAuth, UserController.upgrade_account);
+router.patch("/approve-upgrade-account/:id", checkAuth, UserController.approve_upgrade_account);
+
 module.exports = router;

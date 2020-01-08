@@ -8,6 +8,7 @@ const userSchema = mongoose.Schema({
     dayofbirth: Date,
     address: String,
     phone: String,
+    store_name: String,
     email: {
         type: String,
         required: true,
@@ -18,6 +19,14 @@ const userSchema = mongoose.Schema({
     status: {
         type: Number,
         default: 1
+    },
+    request_for_selling: {
+        type: Number,
+        default: 0
+    },
+    is_seller: {
+        type: Number,
+        default: 0
     }
 }, {
     timestamps: true

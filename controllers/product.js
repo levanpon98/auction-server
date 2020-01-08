@@ -35,7 +35,6 @@ exports.products_get_all = (req, res, next) => {
 };
 
 exports.create_product = (req, res, next) => {
-    console.log(req.files)
     if(req.files) {
         const product = new Product({
             title: req.body.title,
@@ -180,3 +179,61 @@ exports.delete_product_by_id = (req, res, next) => {
 
 
 }
+
+
+exports.approve = (req, res, next) => {
+    const id = req.params.id;
+    Product.findById(id)
+        .exec()
+        .then(doc => {
+            Product.updateOne({_id: id}, {$set: {status: 1}})
+                .exec()
+                .then(() => {
+                    res.status(200).json({
+                        message: "Approve product successfully",
+                        ok: 1
+                    })
+                })
+                .catch(err => {
+                    res.status(200).json({
+                        error: err,
+                        ok: 0
+                    })
+                })
+        })
+        .catch(err => {
+            res.status(200).json({
+                error: err,
+                ok: 0
+            });
+        })
+};
+
+
+exports.not_approve = (req, res, next) => {
+    const id = req.params.id;
+    Product.findById(id)
+        .exec()
+        .then(doc => {
+            Product.updateOne({_id: id}, {$set: {status: 2}})
+                .exec()
+                .then(() => {
+                    res.status(200).json({
+                        message: "Product has been sent to the seller for editing",
+                        ok: 1
+                    })
+                })
+                .catch(err => {
+                    res.status(200).json({
+                        error: err,
+                        ok: 0
+                    })
+                })
+        })
+        .catch(err => {
+            res.status(200).json({
+                error: err,
+                ok: 0
+            });
+        })
+};

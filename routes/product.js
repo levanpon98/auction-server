@@ -33,6 +33,8 @@ router.post('/', upload.fields([
 ]), ProductController.create_product);
 router.get('/:id',  ProductController.get_product_by_id);
 router.patch("/:id", checkAuth, ProductController.update_product_by_id);
+router.patch("/approve/:id", checkAuth, ProductController.approve);
+router.patch("/not-approve/:id", checkAuth, ProductController.not_approve);
 router.delete('/:id', checkAuth, ProductController.delete_product_by_id);
 
 module.exports = router;

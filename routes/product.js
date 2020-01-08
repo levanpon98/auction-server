@@ -27,7 +27,7 @@ const upload = multer({
 });
 
 router.get('/', checkAuth,ProductController.products_get_all);
-router.post('/', checkAuth, upload.fields([
+router.post('/', upload.fields([
     { name: 'image', maxCount: 1 },
     { name: 'gallery', maxCount: 3 }
 ]), ProductController.create_product);

@@ -26,8 +26,8 @@ const upload = multer({
     fileFilter: fileFilter
 });
 
-router.get('/',  ProductController.products_get_all);
-router.post('/', upload.fields([
+router.get('/', checkAuth,ProductController.products_get_all);
+router.post('/', checkAuth, upload.fields([
     { name: 'image', maxCount: 1 },
     { name: 'gallery', maxCount: 3 }
 ]), ProductController.create_product);

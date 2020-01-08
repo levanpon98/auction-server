@@ -19,5 +19,6 @@ router.patch("/block-user/:id", checkAuth, UserController.block_user);
 router.patch("/unblock-user/:id", checkAuth, UserController.unblock_user);
 router.patch("/upgrade-account/:id", checkAuth, UserController.upgrade_account);
 router.patch("/approve-upgrade-account/:id", checkAuth, UserController.approve_upgrade_account);
+router.patch("/not_approve-upgrade-account/:id", checkAuth, UserController.not_approve_upgrade_account);
 
 module.exports = router;
